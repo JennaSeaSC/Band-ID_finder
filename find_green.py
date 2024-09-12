@@ -1,4 +1,4 @@
-"Derick's code into a function"
+"find_green_working_tree"
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
@@ -17,7 +17,7 @@ def process_image_and_show(image_path):
     # Define a wider range of green color in HSV
     lower_green = np.array([30, 40, 40])
     upper_green = np.array([90, 255, 255])
-
+  
     # Create a mask for the green color
     mask = cv2.inRange(hsv, lower_green, upper_green)
 
