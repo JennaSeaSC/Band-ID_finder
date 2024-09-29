@@ -1,0 +1,4 @@
+# requirements
+opencv-python>=4.5
+numpy>=1.23
+importmonkey>=0.3
