@@ -14,10 +14,6 @@ Before running the tests or using the project, make sure you have the following 
   pip install -r requirements.txt
   ```
 
-  The `requirements.txt` includes the following dependencies:
-  - OpenCV (`opencv-python`)
-  - Numpy (`numpy`)
-  - ImportMonkey (`importmonkey`)
 
 ## Running the Tests
 
