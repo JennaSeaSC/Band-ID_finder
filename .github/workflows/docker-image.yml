@@ -1,0 +1,63 @@
+name: Build and Test Docker
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag band-id-finder:latest
+
+    - name: Save Docker image
+      run: docker save band-id-finder:latest -o band-id-finder.tar
+
+    - name: Upload Docker image artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: docker-image
+        path: band-id-finder.tar
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - name: Download Docker image artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: docker-image
+
+    - name: Load Docker image
+      run: docker load -i band-id-finder.tar
+
+    - name: Run pytest tests in Docker container
+      run: docker run band-id-finder:latest pytest Tests/test_green_detection.py Tests/test_image_processors.py -v
+
+    - name: Run unittest tests in Docker container
+      run: docker run band-id-finder:latest python -m unittest discover Tests
+
+    - name: Generate test artifacts
+      run: |
+        mkdir -p test-artifacts
+        SHORT_SHA="${GITHUB_SHA:0:7}"
+        docker run -e GIT_COMMIT_ID=$SHORT_SHA -v $(pwd)/test-artifacts:/app/test-artifacts band-id-finder:latest bash -c "python Tests/test_artifacts.py && cp -r Tests/artifacts/* /app/test-artifacts/"
+
+    - name: Upload test artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-artifacts
+        path: test-artifacts/
+        retention-days: 30

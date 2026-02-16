@@ -2,3 +2,5 @@
 opencv-python>=4.5
 numpy>=1.23
 importmonkey>=0.3
+pytest>=8.3.4
+matplotlib>=3.5.0
