@@ -43,7 +43,20 @@ jobs:
       run: docker load -i band-id-finder.tar
 
     - name: Run pytest tests in Docker container
-      run: docker run band-id-finder:latest pytest Tests/ -v
+      run: docker run band-id-finder:latest pytest Tests/test_green_detection.py Tests/test_image_processors.py -v
 
     - name: Run unittest tests in Docker container
       run: docker run band-id-finder:latest python -m unittest discover Tests
+
+    - name: Generate test artifacts
+      run: |
+        mkdir -p test-artifacts
+        docker run -v $(pwd)/test-artifacts:/app/test-artifacts band-id-finder:latest bash -c "python Tests/test_artifacts.py && cp -r Tests/artifacts/* /app/test-artifacts/"
+
+    - name: Upload test artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-artifacts
+        path: test-artifacts/
+        retention-days: 30
