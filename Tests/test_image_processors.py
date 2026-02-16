@@ -3,10 +3,10 @@ import os
 import sys
 import numpy as np
 
-#import image_processors.py file in main dir
+#import image_processors.py file from src dir
 from importmonkey import add_path
 add_path("../")
-from image_processors import ImageProcessor
+from src.image_processors import ImageProcessor
 
 # Test class for ImageProcessor
 class TestImageProcessor(unittest.TestCase):

@@ -16,7 +16,7 @@ from datetime import datetime
 # Import test utilities
 from test_data_generator import TestDataGenerator
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from green_detector import GreenBlobDetector
+from src.green_detector import GreenBlobDetector
 
 # Try to import matplotlib for plotting
 try:

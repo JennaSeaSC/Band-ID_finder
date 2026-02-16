@@ -15,7 +15,7 @@ import shutil
 # Import the test data generator and detector
 from test_data_generator import TestDataGenerator
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from green_detector import GreenBlobDetector
+from src.green_detector import GreenBlobDetector
 
 
 class TestGreenBlobDetection(unittest.TestCase):
