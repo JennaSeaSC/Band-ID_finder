@@ -1,0 +1,49 @@
+name: Build and Test Docker
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag band-id-finder:latest
+
+    - name: Save Docker image
+      run: docker save band-id-finder:latest -o band-id-finder.tar
+
+    - name: Upload Docker image artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: docker-image
+        path: band-id-finder.tar
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - name: Download Docker image artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: docker-image
+
+    - name: Load Docker image
+      run: docker load -i band-id-finder.tar
+
+    - name: Run pytest tests in Docker container
+      run: docker run band-id-finder:latest pytest Tests/ -v
+
+    - name: Run unittest tests in Docker container
+      run: docker run band-id-finder:latest python -m unittest discover Tests
