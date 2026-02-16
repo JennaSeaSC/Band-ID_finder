@@ -51,7 +51,8 @@ jobs:
     - name: Generate test artifacts
       run: |
         mkdir -p test-artifacts
-        docker run -v $(pwd)/test-artifacts:/app/test-artifacts band-id-finder:latest bash -c "python Tests/test_artifacts.py && cp -r Tests/artifacts/* /app/test-artifacts/"
+        SHORT_SHA="${GITHUB_SHA:0:7}"
+        docker run -e GIT_COMMIT_ID=$SHORT_SHA -v $(pwd)/test-artifacts:/app/test-artifacts band-id-finder:latest bash -c "python Tests/test_artifacts.py && cp -r Tests/artifacts/* /app/test-artifacts/"
 
     - name: Upload test artifacts
       if: always()

@@ -36,15 +36,17 @@ class TestArtifactGenerator(unittest.TestCase):
         """Set up output directories."""
         cls.detector = GreenBlobDetector()
 
-        # Get git commit ID
-        try:
-            commit_id = subprocess.check_output(
-                ['git', 'rev-parse', '--short', 'HEAD'],
-                cwd=os.path.dirname(os.path.dirname(__file__)),
-                stderr=subprocess.DEVNULL
-            ).decode('utf-8').strip()
-        except:
-            commit_id = 'no-git'
+        # Get git commit ID from environment variable or git command
+        commit_id = os.environ.get('GIT_COMMIT_ID')
+        if not commit_id:
+            try:
+                commit_id = subprocess.check_output(
+                    ['git', 'rev-parse', '--short', 'HEAD'],
+                    cwd=os.path.dirname(os.path.dirname(__file__)),
+                    stderr=subprocess.DEVNULL
+                ).decode('utf-8').strip()
+            except:
+                commit_id = 'no-git'
 
         cls.commit_id = commit_id
         cls.timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
